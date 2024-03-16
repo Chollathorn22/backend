@@ -26,7 +26,7 @@ app.get('/books', (req, res) => {
 });
 
 //รับค่า id
-app.get('/books/id', (req, res) => {
+app.get('/books/:id', (req, res) => {
     db.get('SELECT * FROM books WHERE id = ?', req.params.id, (err, rows) => {
         if(err) {
             res.status(500).send(err);
@@ -43,26 +43,25 @@ app.get('/books/id', (req, res) => {
 //เพิ่ม  book
 app.post('/books', (req, res) => {
     const book = req.body;
-    db.run('INSERT INTO books(title, author) VALUES (?, ?)', book.title, book.author, function(err) {
+    db.run('INSERT INTO books (title, author) VALUES (?, ?)', book.title, book.author, function(err) {
         if(err) {
             res.status(500).send(err);
         }else {
             book.id = this.lastID;
-            res.send(rows);
+            res.send(book);
         }
     });
 });
 
 //อัพเดต  book
-app.put('/books/id', (req, res) => {
+app.put('/books/:id', (req, res) => {
+    const book = req.body;
     db.run('UPDATE books SET title = ?, author = ? WHERE id = ?',  book.title, book.author, req.params.id, function(err) {
-        const book = req.body;
         if(err) {
             res.status(500).send(err);
         }else{
             res.send(book);
         }
-    
     });
 });
 
